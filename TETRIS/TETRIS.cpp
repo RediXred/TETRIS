@@ -44,15 +44,33 @@ int figs[7][4] = {
 
 void DrawSquare(Point a[], int n) {
     glBegin(GL_QUADS);
-    if (n == 0) glColor3f(1, 0, 0);
-    if (n == 1) glColor3f(0, 1, 0);
-    if (n == 2) glColor3f(0, 0, 1);
-    if (n == 3) glColor3f(1, 1, 0);
-    if (n == 4) glColor3f(1, 0, 1);
-    if (n == 5) glColor3f(0, 1, 1);
-    if (n == 6) glColor3f(0.5, 0.5, 0.5);
+    switch (n)
+    {
+    case 0:
+        glColor3f(1, 0, 0);
+        break;
+    case 1:
+        glColor3f(0, 1, 0);
+        break;
+    case 2:
+        glColor3f(0, 0, 1);
+        break;
+    case 3:
+        glColor3f(1, 1, 0);
+        break;
+    case 4:
+        glColor3f(1, 0, 1);
+        break;
+    case 5:
+        glColor3f(0, 1, 1);
+        break;
+    case 6:
+        glColor3f(0.5, 0.5, 0.5);
+        break;
+    default:
+        break;
+    }
     for (int i = 0; i < 4; i++) {
-        //printf("%d\n", a[i].x);
         if (a[i].y > 0 && check_n == 0) {
             glVertex2f(a[i].x, a[i].y); // top left
             glVertex2f(a[i].x + 10, a[i].y); // top right 
@@ -74,16 +92,33 @@ void ShowPutted(int a[HEIGHT][WIDTH], int n) {
     
     for (int i = 0; i < HEIGHT; i++) {
         for (int j = 0; j < WIDTH; j++) {
-            //printf("%d %d\n", i, j);
             if (*(*(a + i) + j) != 0) {
-                if (*(*(a + i) + j) == 1) glColor3f(1, 0, 0);
-                if (*(*(a + i) + j) == 2) glColor3f(0, 1, 0);
-                if (*(*(a + i) + j) == 3) glColor3f(0, 0, 1);
-                if (*(*(a + i) + j) == 4) glColor3f(1, 1, 0);
-                if (*(*(a + i) + j) == 5) glColor3f(1, 0, 1);
-                if (*(*(a + i) + j) == 6) glColor3f(0, 1, 1);
-                if (*(*(a + i) + j) == 7) glColor3f(0.5, 0.5, 0.5);
-
+                switch (*(*(a + i) + j))
+                {
+                case 1:
+                    glColor3f(1, 0, 0);
+                    break;
+                case 2:
+                    glColor3f(0, 1, 0);
+                    break;
+                case 3:
+                    glColor3f(0, 0, 1);
+                    break;
+                case 4:
+                    glColor3f(1, 1, 0);
+                    break;
+                case 5:
+                    glColor3f(1, 0, 1);
+                    break;
+                case 6:
+                    glColor3f(0, 1, 1);
+                    break;
+                case 7:
+                    glColor3f(0.5, 0.5, 0.5);
+                    break;
+                default:
+                    break;
+                }
                 glBegin(GL_QUADS);
                 glVertex2f((j) * 10, (i) * 10 + 10); // top left
                 glVertex2f((j) * 10 + 10, (i) * 10 + 10); // top right
@@ -108,13 +143,32 @@ void Show_Next(int n) {
     }
     for (int i = 0; i < 4; i++) {
         glBegin(GL_QUADS);
-        if (n == 0) glColor3f(1, 0, 0);
-        if (n == 1) glColor3f(0, 1, 0);
-        if (n == 2) glColor3f(0, 0, 1);
-        if (n == 3) glColor3f(1, 1, 0);
-        if (n == 4) glColor3f(1, 0, 1);
-        if (n == 5) glColor3f(0, 1, 1);
-        if (n == 6) glColor3f(0.5, 0.5, 0.5);
+        switch (n)
+        {
+        case 0:
+            glColor3f(1, 0, 0);
+            break;
+        case 1:
+            glColor3f(0, 1, 0);
+            break;
+        case 2:
+            glColor3f(0, 0, 1);
+            break;
+        case 3:
+            glColor3f(1, 1, 0);
+            break;
+        case 4:
+            glColor3f(1, 0, 1);
+            break;
+        case 5:
+            glColor3f(0, 1, 1);
+            break;
+        case 6:
+            glColor3f(0.5, 0.5, 0.5);
+            break;
+        default:
+            break;
+        }
         glVertex2f(c[i].x, c[i].y); // top left
         glVertex2f(c[i].x + 10, c[i].y); // top right 
         glVertex2f(c[i].x + 10, c[i].y - 10); // bottom right
@@ -195,7 +249,6 @@ bool check() {
     for (int i = 0; i < 4; i++) {
         
         if (a[i].x < 0 || a[i].x >= 100 || a[i].y <= 0) {
-            
             return 0;
         }
         else if ((a[i].y / 10 - 1 < 20) && (field[a[i].y / 10 - 1][a[i].x / 10])) {
@@ -238,13 +291,7 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
         }
         else if (flag_entered == 3) {
             printf("PAUSE\n");
-            if (flag_pause == 0) {
-                flag_pause = 1;
-            }
-            else {
-                flag_pause = 0;
-            }
-            
+            flag_pause = (flag_pause == 0);
         }
     }
 }
@@ -343,10 +390,7 @@ int loop_flag = 0;
 void mouseButtonCallback2(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        if (endFlag_entered == 1) {
-            printf("START\n");
-            loop_flag = 1;
-        }
+        loop_flag = (endFlag_entered == 1);
     }
 }
 
@@ -492,7 +536,6 @@ int main(void)
         
         
         if (timer > delay) {
-            
             for (int i = 0; i < 4; i++) {
                 *(b + i) = *(a + i);
                 a[i].y -= 10;
@@ -511,7 +554,7 @@ int main(void)
                 score += 10;
                 tmp_score += 10;
                 printf("S: %d\n", score);
-                if (tmp_score >= 300 && tmp_score != 0) {
+                if (tmp_score >= 300) {
                     tmp_score -= 300;
                     lvl++;
                     printf("LVL: %d\n", lvl);
@@ -549,7 +592,7 @@ int main(void)
                     score += 10;
                     tmp_score += 10;
                     printf("S: %d\n", score);
-                    if (tmp_score >= 300 && tmp_score != 0) {
+                    if (tmp_score >= 300) {
                         tmp_score -= 300;
                         lvl++;
                         printf("LVL: %d\n", lvl);
@@ -563,12 +606,6 @@ int main(void)
             }
             timer_2 = 0;
         }
-        if (timer_3 > 0.18) {
-            if (GetKeyState(VK_UP) < 0) {
-                rotate = true;
-            }
-            timer_3 = 0;
-        }
 
         int k = 0;
         for (int i = 0; i < HEIGHT; i++) {
@@ -580,11 +617,11 @@ int main(void)
             if (count < WIDTH) {
                 k++;
             }
-            if (count == WIDTH) {
+            else if (count == WIDTH) {
                 score += 100;
                 tmp_score += 100;
                 printf("S: %d\n", score);
-                if (tmp_score >= 300 && tmp_score != 0) {
+                if (tmp_score >= 300) {
                     tmp_score -= 300;
                     lvl++;
                     printf("LVL: %d\n", lvl);
@@ -634,9 +671,7 @@ int main(void)
             TIME_EX_PAUSE += (rez_end - rez) / CLOCKS_PER_SEC;
         }
 
-        if (Game_End(field)) {
-            flag_pause = 1;
-        }
+        flag_pause = Game_End(field);
         ShowPutted(field, n);
         if (!Game_End(field)) {
             DrawSquare(a, old);
