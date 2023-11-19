@@ -523,17 +523,12 @@ int main(void)
                 tmp_score += 10;
                 printf("S: %d\n", score);
                 if (tmp_score >= 300 && tmp_score != 0) {
-                    //lvl++;
-                    while (tmp_score >= 300) {
-                        tmp_score -= 300;
-                        lvl++;
-                    }
+                    tmp_score -= 300;
+                    lvl++;
                     printf("LVL: %d\n", lvl);
-                    if (lvl % 1 == 0) {
-                        if (lvl <= 3) {
-                            delay -= 0.07;
-                            printf("DELAY: %lf\n", delay);
-                        }
+                    if (lvl <= 3) {
+                        delay -= 0.07;
+                        printf("DELAY: %lf\n", delay);
                     }
                 }
             }
@@ -569,17 +564,12 @@ int main(void)
                     tmp_score += 10;
                     printf("S: %d\n", score);
                     if (tmp_score >= 300 && tmp_score != 0) {
-                        //lvl++;
-                        while (tmp_score >= 300) {
-                            tmp_score -= 300;
-                            lvl++;
-                        }
+                        tmp_score -= 300;
+                        lvl++;
                         printf("LVL: %d\n", lvl);
-                        if (lvl % 1 == 0) {
-                            if (lvl <= 3) {
-                                delay -= 0.07;
-                                printf("DELAY: %lf\n", delay);
-                            }
+                        if (lvl <= 3) {
+                            delay -= 0.07;
+                            printf("DELAY: %lf\n", delay);
                         }
                     }
                 }
@@ -610,17 +600,12 @@ int main(void)
                 tmp_score += 100;
                 printf("S: %d\n", score);
                 if (tmp_score >= 300 && tmp_score != 0) {
-                    //lvl++;
-                    while (tmp_score >= 300) {
-                        tmp_score -= 300;
-                        lvl++;
-                    }
+                    tmp_score -= 300;
+                    lvl++;
                     printf("LVL: %d\n", lvl);
-                    if (lvl % 1 == 0) {
-                        if (lvl <= 3) {
-                            delay -= 0.07;
-                            printf("DELAY: %lf\n", delay);
-                        }
+                    if (lvl <= 3) {
+                        delay -= 0.07;
+                        printf("DELAY: %lf\n", delay);
                     }
                 }
             }
