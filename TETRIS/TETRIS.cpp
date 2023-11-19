@@ -75,14 +75,14 @@ void ShowPutted(int a[HEIGHT][WIDTH], int n) {
     for (int i = 0; i < HEIGHT; i++) {
         for (int j = 0; j < WIDTH; j++) {
             //printf("%d %d\n", i, j);
-            if (a[i][j] != 0) {
-                if (a[i][j] == 1) glColor3f(1, 0, 0);
-                if (a[i][j] == 2) glColor3f(0, 1, 0);
-                if (a[i][j] == 3) glColor3f(0, 0, 1);
-                if (a[i][j] == 4) glColor3f(1, 1, 0);
-                if (a[i][j] == 5) glColor3f(1, 0, 1);
-                if (a[i][j] == 6) glColor3f(0, 1, 1);
-                if (a[i][j] == 7) glColor3f(0.5, 0.5, 0.5);
+            if (*(*(a + i) + j) != 0) {
+                if (*(*(a + i) + j) == 1) glColor3f(1, 0, 0);
+                if (*(*(a + i) + j) == 2) glColor3f(0, 1, 0);
+                if (*(*(a + i) + j) == 3) glColor3f(0, 0, 1);
+                if (*(*(a + i) + j) == 4) glColor3f(1, 1, 0);
+                if (*(*(a + i) + j) == 5) glColor3f(1, 0, 1);
+                if (*(*(a + i) + j) == 6) glColor3f(0, 1, 1);
+                if (*(*(a + i) + j) == 7) glColor3f(0.5, 0.5, 0.5);
 
                 glBegin(GL_QUADS);
                 glVertex2f((j) * 10, (i) * 10 + 10); // top left
@@ -158,11 +158,7 @@ void Show_Game_Matrix() {
 }
 
 void clearField() {
-    for (int i = 0; i < HEIGHT; i++) {
-        for (int j = 0; j < WIDTH; j++) {
-            field[i][j] = 0;
-        }
-    }
+    memset(field, 0, sizeof(field));
 }
 
 static void cursorPositionCallback(GLFWwindow *window, double xPos, double yPos);
@@ -266,7 +262,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             }
             if (check() == 0) {
                 for (int i = 0; i < 4; i++) {
-                    a[i] = b[i];
+                    *(a + i) = *(b + i);
                 }
             }
         }
@@ -279,7 +275,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 bool Game_End(int a[HEIGHT][WIDTH]) {
     for (int i = 0; i < WIDTH; i++) {
         if (a[HEIGHT - 1][i] != 0) {
-            
             return 1;
         }
     }
@@ -312,11 +307,11 @@ void printLine() {
     if (tmp < 0) tmp = 0;
     int tmp2 = lvl;
     for (int i = 9; i >= 0; i--) {
-        score_s[i] = tmp % 10 + '0';
+        *(score_s + i) = tmp % 10 + '0';
         tmp /= 10;
     }
     for (int i = 1; i >= 0; i--) {
-        char_lvl[i] = tmp2 % 10 + '0';
+        *(char_lvl + i) = tmp2 % 10 + '0';
         tmp2 /= 10;
     }
 
@@ -378,18 +373,13 @@ void printEndGame() {
     int tmp = score;
     int tmp2 = lvl;
     for (int i = 9; i >= 0; i--) {
-        score_s[i] = tmp % 10 + '0';
+        *(score_s + i) = tmp % 10 + '0';
         tmp /= 10;
     }
     for (int i = 1; i >= 0; i--) {
-        char_lvl[i] = tmp2 % 10 + '0';
+        *(char_lvl + i) = tmp2 % 10 + '0';
         tmp2 /= 10;
     }
-    
-    
-    
-
-
     glPushMatrix();
     glScalef(1, -1, 1);
     glTranslatef(0, -190, 0);
@@ -478,16 +468,16 @@ int main(void)
         
         
         for (int i = 0; i < 4; i++) {
-            b[i] = a[i];
+            *(b + i) = *(a + i);
             a[i].x += dx;
         }
         
         if (check() == 0) {
-            for (int i = 0; i < 4; i++) {
-                a[i] = b[i];
-            }
+            a[0] = b[0];
+            a[1] = b[1];
+            a[2] = b[2];
+            a[3] = b[3];
         }
-        
         
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
@@ -504,19 +494,18 @@ int main(void)
         if (timer > delay) {
             
             for (int i = 0; i < 4; i++) {
-                b[i] = a[i];
+                *(b + i) = *(a + i);
                 a[i].y -= 10;
             }
             if (check() == 0) {
                 for (int i = 0; i < 4; i++) {
-                    field[a[i].y / 10][a[i].x / 10] = colorNum;
-                    //printf("%d %d\n", a[i].x, a[i].y);
+                    *(*(field + (a[i].y / 10)) + (a[i].x / 10)) = colorNum;
                 }
                 old = n;
                 colorNum = n + 1;
                 for (int j = 0; j < 4; j++) {
-                    a[j].x = 50 + (10 * (figs[old][j] % 2));
-                    a[j].y = 210 + (10 * (figs[old][j] / 2));
+                    a[j].x = 50 + (10 * (*(*(figs + old) + j) % 2));
+                    a[j].y = 210 + (10 * (*(*(figs + old) + j) / 2));
                 }
                 n = rand() % 7;
                 score += 10;
@@ -546,17 +535,14 @@ int main(void)
                 for (int i = 0; i < 4; i++)
                     a[i].y -= 10;
                 if (check() == 0) {
-                    //delay -= 0.1;
                     for (int i = 0; i < 4; i++) {
-                        field[a[i].y / 10][a[i].x / 10] = colorNum;
+                        *(*(field + (a[i].y / 10)) + (a[i].x / 10)) = colorNum;
                     }
-                    //printf("SOBAKA");
-
                     old = n;
                     colorNum = n + 1;
                     for (int j = 0; j < 4; j++) {
-                        a[j].x = 50 + (10 * (figs[old][j] % 2));
-                        a[j].y = 210 + (10 * (figs[old][j] / 2));
+                        a[j].x = 50 + (10 * ((*(*(figs + old) + j)) % 2));
+                        a[j].y = 210 + (10 * ((*(*(figs + old) + j)) / 2));
                     }
                     n = rand() % 7;
 
@@ -588,9 +574,8 @@ int main(void)
         for (int i = 0; i < HEIGHT; i++) {
             int count = 0;
             for (int j = 0; j < WIDTH; j++) {
-                if (field[i][j]) count++;
-                field[k][j] = field[i][j];
-                
+                if (*(*(field + i) + j)) count++;
+                    *(*(field + k) + j) = *(*(field + i) + j);
             }
             if (count < WIDTH) {
                 k++;
@@ -625,8 +610,8 @@ int main(void)
             old = n;
             colorNum = n + 1;
             for (int j = 0; j < 4; j++) {
-                a[j].x = 50 + (10 * (figs[old][j] % 2));
-                a[j].y = 210 + (10 * (figs[old][j] / 2));
+                a[j].x = 50 + (10 * ((*(*(figs + old) + j)) % 2));
+                a[j].y = 210 + (10 * ((*(*(figs + old) + j)) / 2));
             }
             n = rand() % 7;
         }
@@ -680,11 +665,11 @@ int main(void)
                 TIME_FIN -= 60;
             }
             for (int i = 1; i >= 0; i--) {
-                minute[i] = min % 10 + '0';
+                *(minute + i) = min % 10 + '0';
                 min /= 10;
             }
             for (int i = 1; i >= 0; i--) {
-                seconds[i] = (int)TIME_FIN % 10 + '0';
+                *(seconds + i) = (int)TIME_FIN % 10 + '0';
                 TIME_FIN /= 10;
             }
 
