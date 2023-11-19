@@ -541,15 +541,13 @@ int main(void)
                 a[i].y -= 10;
             }
             if (check() == 0) {
+                old = n;
                 for (int i = 0; i < 4; i++) {
                     *(*(field + (a[i].y / 10)) + (a[i].x / 10)) = colorNum;
+                    a[i].x = 50 + (10 * (*(*(figs + old) + i) % 2));
+                    a[i].y = 210 + (10 * (*(*(figs + old) + i) / 2));
                 }
-                old = n;
                 colorNum = n + 1;
-                for (int j = 0; j < 4; j++) {
-                    a[j].x = 50 + (10 * (*(*(figs + old) + j) % 2));
-                    a[j].y = 210 + (10 * (*(*(figs + old) + j) / 2));
-                }
                 n = rand() % 7;
                 score += 10;
                 tmp_score += 10;
@@ -578,15 +576,13 @@ int main(void)
                 for (int i = 0; i < 4; i++)
                     a[i].y -= 10;
                 if (check() == 0) {
+                    old = n;
                     for (int i = 0; i < 4; i++) {
                         *(*(field + (a[i].y / 10)) + (a[i].x / 10)) = colorNum;
-                    }
-                    old = n;
+                        a[i].x = 50 + (10 * ((*(*(figs + old) + i)) % 2));
+                        a[i].y = 210 + (10 * ((*(*(figs + old) + i)) / 2));
+                    }           
                     colorNum = n + 1;
-                    for (int j = 0; j < 4; j++) {
-                        a[j].x = 50 + (10 * ((*(*(figs + old) + j)) % 2));
-                        a[j].y = 210 + (10 * ((*(*(figs + old) + j)) / 2));
-                    }
                     n = rand() % 7;
 
                     score += 10;
