@@ -14,21 +14,21 @@
 #define _WIN32_WINNT 0xA00
 
 int field[HEIGHT][WIDTH] = { 0 };
-int w = 34; // size of block
-int old = 0;
-int score = -10;
-int tmp_score = score;
-int lvl = 1;
+short w = 34; // size of block
+short old = 0;
+short score = -10;
+short tmp_score = score;
+short lvl = 1;
 
 struct Point {
     int x, y;
 }a[4], b[4], c[4];
 
 struct Button {
-    int x, y;
+    short x, y;
 } arr[4];
 
-int check_n = 0;
+short check_n = 0;
 
 int figs[7][4] = {
     1, 3, 5, 7,
@@ -42,7 +42,7 @@ int figs[7][4] = {
 
 
 
-void DrawSquare(Point a[], int n) {
+void DrawSquare(Point a[], short n) {
     glBegin(GL_QUADS);
     switch (n)
     {
@@ -70,7 +70,7 @@ void DrawSquare(Point a[], int n) {
     default:
         break;
     }
-    for (int i = 0; i < 4; i++) {
+    for (short i = 0; i < 4; i++) {
         if (a[i].y > 0 && check_n == 0) {
             glVertex2f(a[i].x, a[i].y); // top left
             glVertex2f(a[i].x + 10, a[i].y); // top right 
@@ -88,10 +88,10 @@ void DrawSquare(Point a[], int n) {
     glEnd();
 }
 
-void ShowPutted(int a[HEIGHT][WIDTH], int n) {
+void ShowPutted(int a[HEIGHT][WIDTH], short n) {
     
-    for (int i = 0; i < HEIGHT; i++) {
-        for (int j = 0; j < WIDTH; j++) {
+    for (short i = 0; i < HEIGHT; i++) {
+        for (short j = 0; j < WIDTH; j++) {
             if (*(*(a + i) + j) != 0) {
                 switch (*(*(a + i) + j))
                 {
@@ -130,8 +130,8 @@ void ShowPutted(int a[HEIGHT][WIDTH], int n) {
     }
 }
 
-void Show_Next(int n) {
-    for (int i = 0; i < 4; i++) {
+void Show_Next(short n) {
+    for (short i = 0; i < 4; i++) {
         if (1) {
             //sn = rand() % 7;
             //colorNum = n + 1;
@@ -141,7 +141,7 @@ void Show_Next(int n) {
             }
         }
     }
-    for (int i = 0; i < 4; i++) {
+    for (short i = 0; i < 4; i++) {
         glBegin(GL_QUADS);
         switch (n)
         {
@@ -185,25 +185,25 @@ void Show_Game_Matrix() {
     glVertex2f(0, 100);
     glVertex2f(200, 100);
     glEnd();
-    for (int i = 0; i < HEIGHT * 10; i += 10) {
+    for (short i = 0; i < HEIGHT * 10; i += 10) {
         glBegin(GL_LINE_STRIP);
         glVertex2f(0, i);
         glVertex2f(WIDTH * 10, i);
         glEnd();
     }
-    for (int i = 0; i < WIDTH * 10 + 1; i += 10) {
+    for (short i = 0; i < WIDTH * 10 + 1; i += 10) {
         glBegin(GL_LINE_STRIP);
         glVertex2f(i, 0);
         glVertex2f(i, HEIGHT * 10);
         glEnd();
     }
-    for (int i = WIDTH * 10 + 40; i < WIDTH * 10 + 70; i += 10) {
+    for (short i = WIDTH * 10 + 40; i < WIDTH * 10 + 70; i += 10) {
         glBegin(GL_LINE_STRIP);
         glVertex2f(i, 130);
         glVertex2f(i, 170);
         glEnd();
     }
-    for (int i = 130; i <= 170; i += 10) {
+    for (short i = 130; i <= 170; i += 10) {
         glBegin(GL_LINE_STRIP);
         glVertex2f(160, i);
         glVertex2f(140, i);
@@ -246,7 +246,7 @@ void Show_Button_Start() {
 
 
 bool check() {
-    for (int i = 0; i < 4; i++) {
+    for (short i = 0; i < 4; i++) {
         
         if (a[i].x < 0 || a[i].x >= 100 || a[i].y <= 0) {
             return 0;
@@ -258,10 +258,10 @@ bool check() {
     return 1;
 }
 
-int flag_entered = 0;
-int flag_start = 0;
-int flag_restart = 0;
-int flag_pause = 0;
+short flag_entered = 0;
+short flag_start = 0;
+short flag_restart = 0;
+short flag_pause = 0;
 
 static void cursorPositionCallback(GLFWwindow* window, double xPos, double yPos) {
     //printf("%lf %lf\n", xPos, yPos);
@@ -301,14 +301,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (old != 6) {
         if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
             Point p = a[1];
-            for (int i = 0; i < 4; i++) {
-                int x = a[i].y - p.y;
-                int y = a[i].x - p.x;
+            for (short i = 0; i < 4; i++) {
+                short x = a[i].y - p.y;
+                short y = a[i].x - p.x;
                 a[i].x = p.x - x;
                 a[i].y = p.y + y;
             }
             if (check() == 0) {
-                for (int i = 0; i < 4; i++) {
+                for (short i = 0; i < 4; i++) {
                     *(a + i) = *(b + i);
                 }
             }
@@ -320,7 +320,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 
 bool Game_End(int a[HEIGHT][WIDTH]) {
-    for (int i = 0; i < WIDTH; i++) {
+    for (short i = 0; i < WIDTH; i++) {
         if (a[HEIGHT - 1][i] != 0) {
             return 1;
         }
@@ -331,7 +331,7 @@ bool Game_End(int a[HEIGHT][WIDTH]) {
 void print_string(float x, float y, char* text, float r, float g, float b)
 {
     static char buffer[99999]; // ~500 chars
-    int num_quads;
+    short num_quads;
 
     num_quads = stb_easy_font_print(x, y, text, NULL, buffer, sizeof(buffer));
 
@@ -350,14 +350,14 @@ void printLine() {
     char ch_lvl[6] = "LVL:\0";
     char score_s[11] = { '\0' };
     char char_lvl[2] = { '\0' };
-    int tmp = score;
+    short tmp = score;
     if (tmp < 0) tmp = 0;
-    int tmp2 = lvl;
-    for (int i = 9; i >= 0; i--) {
+    short tmp2 = lvl;
+    for (short i = 9; i >= 0; i--) {
         *(score_s + i) = tmp % 10 + '0';
         tmp /= 10;
     }
-    for (int i = 1; i >= 0; i--) {
+    for (short i = 1; i >= 0; i--) {
         *(char_lvl + i) = tmp2 % 10 + '0';
         tmp2 /= 10;
     }
@@ -394,9 +394,9 @@ void mouseButtonCallback2(GLFWwindow* window, int button, int action, int mods)
     }
 }
 
-double TIME_FIN = 0;
-double TIME_EX_PAUSE = 0;
-int min = 0;
+float TIME_FIN = 0;
+float TIME_EX_PAUSE = 0;
+short min = 0;
 char minute[2] = { '\0' };
 char seconds[2] = { '\0' };
 void printEndGame() {
@@ -414,13 +414,13 @@ void printEndGame() {
     char restart_char[9] = "EXIT\0";
     char score_s[11] = { '\0' };
     char char_lvl[2] = { '\0' };
-    int tmp = score;
-    int tmp2 = lvl;
-    for (int i = 9; i >= 0; i--) {
+    short tmp = score;
+    short tmp2 = lvl;
+    for (short i = 9; i >= 0; i--) {
         *(score_s + i) = tmp % 10 + '0';
         tmp /= 10;
     }
-    for (int i = 1; i >= 0; i--) {
+    for (short i = 1; i >= 0; i--) {
         *(char_lvl + i) = tmp2 % 10 + '0';
         tmp2 /= 10;
     }
@@ -438,7 +438,7 @@ void printEndGame() {
     glPopMatrix();
 }
 
-int test = 0;
+short test = 0;
 
 
 int main(void)
@@ -468,17 +468,15 @@ int main(void)
     glTranslatef(-1, -1, 0);
     glScalef(0.01, 0.01, 1);
 
-    int dx = 0, colorNum = 1;
-    bool rotate = false;
-    double timer = 0, timer_2 = 0, timer_3 = 0, delay = 0.3;
+    short dx = 0, colorNum = 1;
+    float timer = 0, timer_2 = 0, delay = 0.3;
     
     clock_t clock_start;
     clock_t clock_end;
-    int n = rand() % 7;
+    short n = rand() % 7;
     old = n;
     colorNum = n + 1;
-    double s_time = 1;
-    int t = 0;
+    short t = 0;
     clock_t TIME_EX_START;
     clock_t TIME_EX_END;
     /* Loop until the user closes the window */
@@ -505,13 +503,12 @@ int main(void)
         clock_start = clock();
         Sleep(1);
         clock_end = clock();
-        double time = (double)(clock_end - clock_start) / CLOCKS_PER_SEC;
+        float time = (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
         timer += time;
         timer_2 += time;
-        timer_3 += time;
         
         
-        for (int i = 0; i < 4; i++) {
+        for (short i = 0; i < 4; i++) {
             *(b + i) = *(a + i);
             a[i].x += dx;
         }
@@ -531,18 +528,15 @@ int main(void)
         glScalef(0.01, 0.01, 1);
         
         dx = 0;
-        rotate = false;
-        
-        
-        
+
         if (timer > delay) {
-            for (int i = 0; i < 4; i++) {
+            for (short i = 0; i < 4; i++) {
                 *(b + i) = *(a + i);
                 a[i].y -= 10;
             }
             if (check() == 0) {
                 old = n;
-                for (int i = 0; i < 4; i++) {
+                for (short i = 0; i < 4; i++) {
                     *(*(field + (a[i].y / 10)) + (a[i].x / 10)) = colorNum;
                     a[i].x = 50 + (10 * (*(*(figs + old) + i) % 2));
                     a[i].y = 210 + (10 * (*(*(figs + old) + i) / 2));
@@ -573,11 +567,11 @@ int main(void)
                 dx = -10;
             }
             if (GetKeyState(VK_DOWN) < 0) {
-                for (int i = 0; i < 4; i++)
+                for (short i = 0; i < 4; i++)
                     a[i].y -= 10;
                 if (check() == 0) {
                     old = n;
-                    for (int i = 0; i < 4; i++) {
+                    for (short i = 0; i < 4; i++) {
                         *(*(field + (a[i].y / 10)) + (a[i].x / 10)) = colorNum;
                         a[i].x = 50 + (10 * ((*(*(figs + old) + i)) % 2));
                         a[i].y = 210 + (10 * ((*(*(figs + old) + i)) / 2));
@@ -603,10 +597,10 @@ int main(void)
             timer_2 = 0;
         }
 
-        int k = 0;
-        for (int i = 0; i < HEIGHT; i++) {
-            int count = 0;
-            for (int j = 0; j < WIDTH; j++) {
+        short k = 0;
+        for (short i = 0; i < HEIGHT; i++) {
+            short count = 0;
+            for (short j = 0; j < WIDTH; j++) {
                 if (*(*(field + i) + j)) count++;
                     *(*(field + k) + j) = *(*(field + i) + j);
             }
@@ -642,7 +636,7 @@ int main(void)
             clearField();
             old = n;
             colorNum = n + 1;
-            for (int j = 0; j < 4; j++) {
+            for (short j = 0; j < 4; j++) {
                 a[j].x = 50 + (10 * ((*(*(figs + old) + j)) % 2));
                 a[j].y = 210 + (10 * ((*(*(figs + old) + j)) / 2));
             }
@@ -687,19 +681,19 @@ int main(void)
             TIME_EX_END = clock();
             TIME_FIN = (TIME_EX_END - TIME_EX_START) / CLOCKS_PER_SEC;
             TIME_FIN -= TIME_EX_PAUSE;
-            for (int i = 1; i <= TIME_FIN; i++) {
+            for (short i = 1; i <= TIME_FIN; i++) {
                 if (i % 60 == 0) {
                     min++;
                 }
             }
-            for (int i = 0; i < min; i++) {
+            for (short i = 0; i < min; i++) {
                 TIME_FIN -= 60;
             }
-            for (int i = 1; i >= 0; i--) {
+            for (short i = 1; i >= 0; i--) {
                 *(minute + i) = min % 10 + '0';
                 min /= 10;
             }
-            for (int i = 1; i >= 0; i--) {
+            for (short i = 1; i >= 0; i--) {
                 *(seconds + i) = (int)TIME_FIN % 10 + '0';
                 TIME_FIN /= 10;
             }
