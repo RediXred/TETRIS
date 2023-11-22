@@ -211,6 +211,7 @@ void Show_Game_Matrix() {
     }
 }
 
+inline
 void clearField() {
     memset(field, 0, sizeof(field));
 }
@@ -244,7 +245,7 @@ void Show_Button_Start() {
 
 }
 
-
+inline
 bool check() {
     for (short i = 0; i < 4; i++) {
         
@@ -263,6 +264,7 @@ short flag_start = 0;
 short flag_restart = 0;
 short flag_pause = 0;
 
+inline
 static void cursorPositionCallback(GLFWwindow* window, double xPos, double yPos) {
     //printf("%lf %lf\n", xPos, yPos);
     if (xPos > 443 && yPos > 477 && xPos < 577 && yPos < 541) {
@@ -278,6 +280,8 @@ static void cursorPositionCallback(GLFWwindow* window, double xPos, double yPos)
         flag_entered = 0;
     }
 }
+
+inline
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
@@ -377,6 +381,9 @@ void printLine() {
 
 
 int endFlag_entered = 0;
+
+
+inline
 static void cursorPositionCallback2(GLFWwindow* window2, double xPos, double yPos) {
     if (xPos > 35 && yPos > 579 && xPos < 643 && yPos < 643) {
         endFlag_entered = 1;
@@ -386,7 +393,9 @@ static void cursorPositionCallback2(GLFWwindow* window2, double xPos, double yPo
     }
 }
 
+
 int loop_flag = 0;
+inline
 void mouseButtonCallback2(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
