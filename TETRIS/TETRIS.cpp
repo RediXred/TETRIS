@@ -479,7 +479,7 @@ int main(void)
 
     short dx = 0, colorNum = 1;
     float timer = 0, timer_2 = 0, delay = 0.3;
-    
+    bool time_normalize = 0;
     clock_t clock_start;
     clock_t clock_end;
     short n = rand() % 7;
@@ -491,103 +491,68 @@ int main(void)
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-        /* Wait for start button */
-        while (!flag_start) {
+        if (!Game_End(field)){
+            /* Wait for start button */
+            while (!flag_start) {
+                glClear(GL_COLOR_BUFFER_BIT);
+                glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+                glLoadIdentity();
+                glTranslatef(-1, -1, 0);
+                glScalef(0.01, 0.01, 1);
+                Show_Game_Matrix();
+                Show_Button_Start();
+                printLine();
+                glfwSwapBuffers(window);
+                glfwPollEvents();
+            }
+            if (!t) { 
+                TIME_EX_START = clock(); 
+                t = 1;
+            }
+
+            clock_start = clock();
+            Sleep(1);
+            clock_end = clock();
+            float time = (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
+            timer += time;
+            timer_2 += time;
+        
+        
+            for (short i = 0; i < 4; i++) {
+                *(b + i) = *(a + i);
+                a[i].x += dx;
+            }
+        
+            if (check() == 0) {
+                a[0] = b[0];
+                a[1] = b[1];
+                a[2] = b[2];
+                a[3] = b[3];
+            }
+        
+            /* Render here */
             glClear(GL_COLOR_BUFFER_BIT);
             glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             glLoadIdentity();
             glTranslatef(-1, -1, 0);
             glScalef(0.01, 0.01, 1);
-            Show_Game_Matrix();
-            Show_Button_Start();
-            printLine();
-            glfwSwapBuffers(window);
-            glfwPollEvents();
-        }
-        if (!t) { 
-            TIME_EX_START = clock(); 
-            t = 1;
-        }
+        
+            dx = 0;
 
-        clock_start = clock();
-        Sleep(1);
-        clock_end = clock();
-        float time = (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
-        timer += time;
-        timer_2 += time;
-        
-        
-        for (short i = 0; i < 4; i++) {
-            *(b + i) = *(a + i);
-            a[i].x += dx;
-        }
-        
-        if (check() == 0) {
-            a[0] = b[0];
-            a[1] = b[1];
-            a[2] = b[2];
-            a[3] = b[3];
-        }
-        
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glLoadIdentity();
-        glTranslatef(-1, -1, 0);
-        glScalef(0.01, 0.01, 1);
-        
-        dx = 0;
-
-        if (timer > delay) {
-            for (short i = 0; i < 4; i++) {
-                *(b + i) = *(a + i);
-                a[i].y -= 10;
-            }
-            if (check() == 0) {
-                old = n;
+            if (timer > delay) {
                 for (short i = 0; i < 4; i++) {
-                    *(*(field + (a[i].y / 10)) + (a[i].x / 10)) = colorNum;
-                    a[i].x = 50 + (10 * (*(*(figs + old) + i) % 2));
-                    a[i].y = 210 + (10 * (*(*(figs + old) + i) / 2));
-                }
-                colorNum = n + 1;
-                n = rand() % 7;
-                score += 10;
-                tmp_score += 10;
-                printf("S: %d\n", score);
-                if (tmp_score >= 300) {
-                    tmp_score -= 300;
-                    lvl++;
-                    printf("LVL: %d\n", lvl);
-                    if (lvl <= 3) {
-                        delay -= 0.07;
-                        printf("DELAY: %lf\n", delay);
-                    }
-                }
-            }
-            timer = 0;
-        }
-        if (timer_2 > 0.08) {
-
-            if (GetKeyState(VK_RIGHT) < 0) {
-                dx = 10;
-            }
-            if (GetKeyState(VK_LEFT) < 0) {
-                dx = -10;
-            }
-            if (GetKeyState(VK_DOWN) < 0) {
-                for (short i = 0; i < 4; i++)
+                    *(b + i) = *(a + i);
                     a[i].y -= 10;
+                }
                 if (check() == 0) {
                     old = n;
                     for (short i = 0; i < 4; i++) {
                         *(*(field + (a[i].y / 10)) + (a[i].x / 10)) = colorNum;
-                        a[i].x = 50 + (10 * ((*(*(figs + old) + i)) % 2));
-                        a[i].y = 210 + (10 * ((*(*(figs + old) + i)) / 2));
-                    }           
+                        a[i].x = 50 + (10 * (*(*(figs + old) + i) % 2));
+                        a[i].y = 210 + (10 * (*(*(figs + old) + i) / 2));
+                    }
                     colorNum = n + 1;
                     n = rand() % 7;
-
                     score += 10;
                     tmp_score += 10;
                     printf("S: %d\n", score);
@@ -601,140 +566,169 @@ int main(void)
                         }
                     }
                 }
-                
+                timer = 0;
             }
-            timer_2 = 0;
-        }
+            if (timer_2 > 0.08) {
 
-        short k = 0;
-        for (short i = 0; i < HEIGHT; i++) {
-            short count = 0;
-            for (short j = 0; j < WIDTH; j++) {
-                if (*(*(field + i) + j)) count++;
-                    *(*(field + k) + j) = *(*(field + i) + j);
+                if (GetKeyState(VK_RIGHT) < 0) {
+                    dx = 10;
+                }
+                if (GetKeyState(VK_LEFT) < 0) {
+                    dx = -10;
+                }
+                if (GetKeyState(VK_DOWN) < 0) {
+                    for (short i = 0; i < 4; i++)
+                        a[i].y -= 10;
+                    if (check() == 0) {
+                        old = n;
+                        for (short i = 0; i < 4; i++) {
+                            *(*(field + (a[i].y / 10)) + (a[i].x / 10)) = colorNum;
+                            a[i].x = 50 + (10 * ((*(*(figs + old) + i)) % 2));
+                            a[i].y = 210 + (10 * ((*(*(figs + old) + i)) / 2));
+                        }           
+                        colorNum = n + 1;
+                        n = rand() % 7;
+
+                        score += 10;
+                        tmp_score += 10;
+                        printf("S: %d\n", score);
+                        if (tmp_score >= 300) {
+                            tmp_score -= 300;
+                            lvl++;
+                            printf("LVL: %d\n", lvl);
+                            if (lvl <= 3) {
+                                delay -= 0.07;
+                                printf("DELAY: %lf\n", delay);
+                            }
+                        }
+                    }
+                
+                }
+                timer_2 = 0;
             }
-            if (count < WIDTH) {
-                k++;
-            }
-            else if (count == WIDTH) {
-                score += 100;
-                tmp_score += 100;
-                printf("S: %d\n", score);
-                if (tmp_score >= 300) {
-                    tmp_score -= 300;
-                    lvl++;
-                    printf("LVL: %d\n", lvl);
-                    if (lvl <= 3) {
-                        delay -= 0.07;
-                        printf("DELAY: %lf\n", delay);
+
+            short k = 0;
+            for (short i = 0; i < HEIGHT; i++) {
+                short count = 0;
+                for (short j = 0; j < WIDTH; j++) {
+                    if (*(*(field + i) + j)) count++;
+                        *(*(field + k) + j) = *(*(field + i) + j);
+                }
+                if (count < WIDTH) {
+                    k++;
+                }
+                else if (count == WIDTH) {
+                    score += 100;
+                    tmp_score += 100;
+                    printf("S: %d\n", score);
+                    if (tmp_score >= 300) {
+                        tmp_score -= 300;
+                        lvl++;
+                        printf("LVL: %d\n", lvl);
+                        if (lvl <= 3) {
+                            delay -= 0.07;
+                            printf("DELAY: %lf\n", delay);
+                        }
                     }
                 }
-            }
             
-        }
+            }
 
         
-        if (flag_restart) {
-            tmp_score = 0;
-            score = 0;
-            lvl = 1;
-            delay = 0.3;
-            TIME_EX_START = 0;
-            TIME_EX_START = clock();
-            flag_restart = 0;
-            clearField();
-            old = n;
-            colorNum = n + 1;
-            for (short j = 0; j < 4; j++) {
-                a[j].x = 50 + (10 * ((*(*(figs + old) + j)) % 2));
-                a[j].y = 210 + (10 * ((*(*(figs + old) + j)) / 2));
-            }
-            n = rand() % 7;
-        }
-        if (flag_pause == 1) {
-            clock_t rez, rez_end;
-            rez = clock();
-            while (flag_pause) {
-                if (flag_restart == 1) {
-                    TIME_EX_START = 0;
-                    TIME_EX_START = clock();
-                    clearField();
-                    flag_pause = 0;
-                    break;
+            if (flag_restart) {
+                tmp_score = 0;
+                score = 0;
+                lvl = 1;
+                delay = 0.3;
+                TIME_EX_START = 0;
+                TIME_EX_START = clock();
+                flag_restart = 0;
+                clearField();
+                old = n;
+                colorNum = n + 1;
+                for (short j = 0; j < 4; j++) {
+                    a[j].x = 50 + (10 * ((*(*(figs + old) + j)) % 2));
+                    a[j].y = 210 + (10 * ((*(*(figs + old) + j)) / 2));
                 }
-                Show_Game_Matrix();
-                Show_Button_Start();
-                glfwPollEvents();
+                n = rand() % 7;
             }
-            rez_end = clock();
-            TIME_EX_PAUSE += (rez_end - rez) / CLOCKS_PER_SEC;
-        }
+            if (flag_pause == 1) {
+                clock_t rez, rez_end;
+                rez = clock();
+                while (flag_pause) {
+                    if (flag_restart == 1) {
+                        TIME_EX_START = 0;
+                        TIME_EX_START = clock();
+                        clearField();
+                        flag_pause = 0;
+                        break;
+                    }
+                    Show_Game_Matrix();
+                    Show_Button_Start();
+                    glfwPollEvents();
+                }
+                rez_end = clock();
+                TIME_EX_PAUSE += (rez_end - rez) / CLOCKS_PER_SEC;
+            }
 
-        flag_pause = Game_End(field);
-        ShowPutted(field, n);
-        if (!Game_End(field)) {
-            DrawSquare(a, old);
-        }
-        Show_Next(n);
-        Show_Game_Matrix();
-        Show_Button_Start();
-        printLine();
+            flag_pause = Game_End(field);
+            ShowPutted(field, n);
+            if (!Game_End(field)) {
+                DrawSquare(a, old);
+            }
+            Show_Next(n);
+            Show_Game_Matrix();
+            Show_Button_Start();
+            printLine();
         
         
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-        /* Poll for and process events */
-        glfwPollEvents();
+            /* Swap front and back buffers */
+            glfwSwapBuffers(window);
+            /* Poll for and process events */
+            glfwPollEvents();
 
+          
+        }
         if (Game_End(field)) {
-            TIME_EX_END = clock();
-            TIME_FIN = (TIME_EX_END - TIME_EX_START) / CLOCKS_PER_SEC;
-            TIME_FIN -= TIME_EX_PAUSE;
-            for (short i = 1; i <= TIME_FIN; i++) {
-                if (i % 60 == 0) {
-                    min++;
+            glfwSetCursorPosCallback(window, cursorPositionCallback2);
+            glfwSetMouseButtonCallback(window, mouseButtonCallback2);
+            if (!time_normalize) {
+                TIME_EX_END = clock();
+                TIME_FIN = (TIME_EX_END - TIME_EX_START) / CLOCKS_PER_SEC;
+                TIME_FIN -= TIME_EX_PAUSE;
+                for (short i = 1; i <= TIME_FIN; i++) {
+                    if (i % 60 == 0) {
+                        min++;
+                    }
+                }
+                for (short i = 0; i < min; i++) {
+                    TIME_FIN -= 60;
+                }
+                for (short i = 1; i >= 0; i--) {
+                    *(minute + i) = min % 10 + '0';
+                    min /= 10;
+                }
+                for (short i = 1; i >= 0; i--) {
+                    *(seconds + i) = (int)TIME_FIN % 10 + '0';
+                    TIME_FIN /= 10;
                 }
             }
-            for (short i = 0; i < min; i++) {
-                TIME_FIN -= 60;
-            }
-            for (short i = 1; i >= 0; i--) {
-                *(minute + i) = min % 10 + '0';
-                min /= 10;
-            }
-            for (short i = 1; i >= 0; i--) {
-                *(seconds + i) = (int)TIME_FIN % 10 + '0';
-                TIME_FIN /= 10;
-            }
+            time_normalize = 1;
+            glClear(GL_COLOR_BUFFER_BIT);
+            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+            glLoadIdentity();
+            glTranslatef(-1, -1, 0);
+            glScalef(0.01, 0.01, 1);
 
-            GLFWwindow* window2;
-            window2 = glfwCreateWindow(WIDTH * w * 2, HEIGHT * w, "EndGame", NULL, NULL);
-            if (!window2)
-            {
-                glfwTerminate();
-                return -1;
+            printEndGame();
+            if (loop_flag) {
+                clearField();
+                test = 1;
+                break;
             }
-            glfwSetCursorPosCallback(window2, cursorPositionCallback2);
-            glfwSetMouseButtonCallback(window2, mouseButtonCallback2);
-            glfwMakeContextCurrent(window2);
-            while (!glfwWindowShouldClose(window2))
-            {
-                glClear(GL_COLOR_BUFFER_BIT);
-                glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-                glLoadIdentity();
-                glTranslatef(-1, -1, 0);
-                glScalef(0.01, 0.01, 1);
+            glfwSwapBuffers(window);
+            glfwPollEvents();
 
-                printEndGame();
-                if (loop_flag) {
-                    clearField();
-                    test = 1;
-                    break;
-                }
-                glfwSwapBuffers(window2);
-                glfwPollEvents();
-            }
-            glfwTerminate();
         }
         if (test) { 
             return 0; 
