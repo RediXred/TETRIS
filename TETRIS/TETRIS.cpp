@@ -249,7 +249,7 @@ void Show_Button_Start() {
 
 }
 
-inline
+
 bool check() {
     printf("LF: %d\n", line_field);
     short min_pos_x = min(a[0].x, a[3].x);
@@ -720,7 +720,7 @@ int main(void)
             glfwPollEvents();
 
             clock_t END = clock();
-            if (cycles < 300) {
+            if (cycles < 1000) {
                 EXP += (double)(END - BEGIN) / CLOCKS_PER_SEC;
             }
             else {
