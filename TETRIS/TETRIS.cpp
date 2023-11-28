@@ -22,7 +22,7 @@ short old = 0;
 short score = -10;
 short tmp_score = score;
 short lvl = 1;
-short line_field = 0;
+int line_field = 0;
 
 struct Point {
     int x, y;
@@ -251,6 +251,7 @@ void Show_Button_Start() {
 
 inline
 bool check() {
+    printf("LF: %d\n", line_field);
     short min_pos_x = min(a[0].x, a[3].x);
     short max_pos_x = max(a[0].x, a[3].x);
     short min_pos_y = min(a[0].y, a[3].y);
@@ -262,7 +263,7 @@ bool check() {
     if (min_pos_x < 0 || max_pos_x >= 100 || min_pos_y <= 0) {
         return 0;
     }
-    if (min_pos_y < line_field + 10) {
+    if (min_pos_y < line_field + 20) {
         if (max_pos_y / 10 - 1 < 20) {
             if (field[a[0].y / 10 - 1][a[0].x / 10]) {
                 return 0;
@@ -577,7 +578,7 @@ int main(void)
                     old = n;
                     for (short i = 0; i < 4; i++) {
                         *(*(field + (a[i].y / 10)) + (a[i].x / 10)) = colorNum;
-                        line_field = max(a[i].y, line_field) + 10;
+                        line_field = max(a[i].y, line_field);
                         a[i].x = 50 + (10 * (*(*(figs + old) + i) % 2));
                         a[i].y = 210 + (10 * (*(*(figs + old) + i) / 2));
                     }
@@ -613,7 +614,7 @@ int main(void)
                         old = n;
                         for (short i = 0; i < 4; i++) {
                             *(*(field + (a[i].y / 10)) + (a[i].x / 10)) = colorNum;
-                            line_field = max(a[i].y, line_field) + 10;
+                            line_field = max(a[i].y, line_field);
                             a[i].x = 50 + (10 * ((*(*(figs + old) + i)) % 2));
                             a[i].y = 210 + (10 * ((*(*(figs + old) + i)) / 2));
                         }           
