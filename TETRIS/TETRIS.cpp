@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <math.h>
 #include <time.h>
+#include <stdlib.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_easy_font.h>
@@ -13,12 +14,15 @@
 #define WIDTH 10
 #define _WIN32_WINNT 0xA00
 
+
+short n = rand() % 7;
 int field[HEIGHT][WIDTH] = { 0 };
 short w = 34; // size of block
 short old = 0;
 short score = -10;
 short tmp_score = score;
 short lvl = 1;
+int line_field = 0;
 
 struct Point {
     int x, y;
@@ -245,16 +249,40 @@ void Show_Button_Start() {
 
 }
 
-inline
+
 bool check() {
-    for (short i = 0; i < 4; i++) {
-        
-        if (a[i].x < 0 || a[i].x >= 100 || a[i].y <= 0) {
-            return 0;
+    printf("LF: %d\n", line_field);
+    short min_pos_x = min(a[0].x, a[3].x);
+    short max_pos_x = max(a[0].x, a[3].x);
+    short min_pos_y = min(a[0].y, a[3].y);
+    short max_pos_y = max(a[0].y, a[3].y);
+    if (old == 3) {
+        min_pos_x = min(a[2].x, min_pos_x);
+        max_pos_x = max(a[2].x, max_pos_x);
+    }
+    if (min_pos_x < 0 || max_pos_x >= 100 || min_pos_y <= 0) {
+        return 0;
+    }
+    if (min_pos_y < line_field + 20) {
+        if (max_pos_y / 10 - 1 < 20) {
+            if (field[a[0].y / 10 - 1][a[0].x / 10]) {
+                return 0;
+            }
+            else if (field[a[3].y / 10 - 1][a[3].x / 10]) {
+                return 0;
+            }
+            else if (field[a[2].y / 10 - 1][a[2].x / 10]) {
+                return 0;
+            }
+            else if (field[a[1].y / 10 - 1][a[1].x / 10]) {
+                return 0;
+            }
         }
-        else if ((a[i].y / 10 - 1 < 20) && (field[a[i].y / 10 - 1][a[i].x / 10])) {
-            return 0;
-        }
+        /*for (short i = 0; i < 4; i++) {
+            if ((max_pos_y / 10 - 1 < 20) && (field[a[i].y / 10 - 1][a[i].x / 10])) {
+                return 0;
+            }
+        }*/
     }
     return 1;
 }
@@ -454,7 +482,7 @@ int main(void)
 {
     srand(time(0));
     GLFWwindow* window;
-    
+    double EXP = 0.0;
     /* Initialize the library */
     if (!glfwInit())
         return -1;
@@ -482,15 +510,16 @@ int main(void)
     bool time_normalize = 0;
     clock_t clock_start;
     clock_t clock_end;
-    short n = rand() % 7;
     old = n;
     colorNum = n + 1;
     short t = 0;
+    int cycles = 0;
     clock_t TIME_EX_START;
     clock_t TIME_EX_END;
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+        cycles++;
         if (!Game_End(field)){
             /* Wait for start button */
             while (!flag_start) {
@@ -512,6 +541,7 @@ int main(void)
 
             clock_start = clock();
             Sleep(1);
+            clock_t BEGIN = clock();
             clock_end = clock();
             float time = (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
             timer += time;
@@ -548,6 +578,7 @@ int main(void)
                     old = n;
                     for (short i = 0; i < 4; i++) {
                         *(*(field + (a[i].y / 10)) + (a[i].x / 10)) = colorNum;
+                        line_field = max(a[i].y, line_field);
                         a[i].x = 50 + (10 * (*(*(figs + old) + i) % 2));
                         a[i].y = 210 + (10 * (*(*(figs + old) + i) / 2));
                     }
@@ -583,6 +614,7 @@ int main(void)
                         old = n;
                         for (short i = 0; i < 4; i++) {
                             *(*(field + (a[i].y / 10)) + (a[i].x / 10)) = colorNum;
+                            line_field = max(a[i].y, line_field);
                             a[i].x = 50 + (10 * ((*(*(figs + old) + i)) % 2));
                             a[i].y = 210 + (10 * ((*(*(figs + old) + i)) / 2));
                         }           
@@ -687,6 +719,13 @@ int main(void)
             /* Poll for and process events */
             glfwPollEvents();
 
+            clock_t END = clock();
+            if (cycles < 1000) {
+                EXP += (double)(END - BEGIN) / CLOCKS_PER_SEC;
+            }
+            else {
+                printf("%lf\n", EXP);
+            }
           
         }
         if (Game_End(field)) {
