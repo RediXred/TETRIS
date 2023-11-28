@@ -720,7 +720,7 @@ int main(void)
             glfwPollEvents();
 
             clock_t END = clock();
-            if (cycles < 2000) {
+            if (cycles < 300) {
                 EXP += (double)(END - BEGIN) / CLOCKS_PER_SEC;
             }
             else {
