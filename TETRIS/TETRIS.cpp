@@ -263,11 +263,25 @@ bool check() {
         return 0;
     }
     if (min_pos_y < line_field + 10) {
-        for (short i = 0; i < 4; i++) {
-            if ((max_pos_y / 10 - 1 < 20) && (field[a[i].y / 10 - 1][a[i].x / 10])) {
+        if (max_pos_y / 10 - 1 < 20) {
+            if (field[a[0].y / 10 - 1][a[0].x / 10]) {
+                return 0;
+            }
+            else if (field[a[3].y / 10 - 1][a[3].x / 10]) {
+                return 0;
+            }
+            else if (field[a[2].y / 10 - 1][a[2].x / 10]) {
+                return 0;
+            }
+            else if (field[a[1].y / 10 - 1][a[1].x / 10]) {
                 return 0;
             }
         }
+        /*for (short i = 0; i < 4; i++) {
+            if ((max_pos_y / 10 - 1 < 20) && (field[a[i].y / 10 - 1][a[i].x / 10])) {
+                return 0;
+            }
+        }*/
     }
     return 1;
 }
@@ -705,7 +719,7 @@ int main(void)
             glfwPollEvents();
 
             clock_t END = clock();
-            if (cycles < 1000) {
+            if (cycles < 2000) {
                 EXP += (double)(END - BEGIN) / CLOCKS_PER_SEC;
             }
             else {
