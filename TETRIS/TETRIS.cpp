@@ -14,6 +14,8 @@
 #define WIDTH 10
 #define _WIN32_WINNT 0xA00
 
+
+short n = rand() % 7;
 int field[HEIGHT][WIDTH] = { 0 };
 short w = 34; // size of block
 short old = 0;
@@ -253,6 +255,10 @@ bool check() {
     short max_pos_x = max(a[0].x, a[3].x);
     short min_pos_y = min(a[0].y, a[3].y);
     short max_pos_y = max(a[0].y, a[3].y);
+    if (old == 3) {
+        min_pos_x = min(a[2].x, min_pos_x);
+        max_pos_x = max(a[2].x, max_pos_x);
+    }
     if (min_pos_x < 0 || max_pos_x >= 100 || min_pos_y <= 0) {
         return 0;
     }
@@ -489,7 +495,6 @@ int main(void)
     bool time_normalize = 0;
     clock_t clock_start;
     clock_t clock_end;
-    short n = rand() % 7;
     old = n;
     colorNum = n + 1;
     short t = 0;
@@ -700,11 +705,11 @@ int main(void)
             glfwPollEvents();
 
             clock_t END = clock();
-            if (cycles < 300) {
+            if (cycles < 1000) {
                 EXP += (double)(END - BEGIN) / CLOCKS_PER_SEC;
             }
             else {
-                printf("%lf", EXP);
+                printf("%lf\n", EXP);
             }
           
         }
