@@ -256,10 +256,12 @@ bool check() {
     short max_pos_x = max(a[0].x, a[3].x);
     short min_pos_y = min(a[0].y, a[3].y);
     short max_pos_y = max(a[0].y, a[3].y);
-    if (old == 3) {
+    min_pos_x = min(a[2].x, min_pos_x);
+    max_pos_x = max(a[2].x, max_pos_x);
+    /*if (old == 3) {
         min_pos_x = min(a[2].x, min_pos_x);
         max_pos_x = max(a[2].x, max_pos_x);
-    }
+    }*/
     if (min_pos_x < 0 || max_pos_x >= 100 || min_pos_y <= 0) {
         return 0;
     }
