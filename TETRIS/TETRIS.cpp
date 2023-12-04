@@ -251,20 +251,26 @@ void Show_Button_Start() {
 
 
 bool check() {
-    printf("LF: %d\n", line_field);
-    short min_pos_x = min(a[0].x, a[3].x);
-    short max_pos_x = max(a[0].x, a[3].x);
-    short min_pos_y = min(a[0].y, a[3].y);
-    short max_pos_y = max(a[0].y, a[3].y);
-    if (old == 3) {
-        min_pos_x = min(a[2].x, min_pos_x);
-        max_pos_x = max(a[2].x, max_pos_x);
+    //printf("LF: %d\n", line_field);
+    int sign = ((a[0].x - a[3].x) >> (sizeof(int) * 8 - 1)) & 1;
+    int min_pos_x = a[3].x + ((a[0].x - a[3].x) & ((a[0].x - a[3].x) >> (sizeof(int) * 8 - 1)));
+    int max_pos_x = a[0].x - sign * (a[0].x - a[3].x);
+    sign = ((a[0].y - a[3].y) >> (sizeof(int) * 8 - 1)) & 1;
+    int min_pos_y = a[3].y + ((a[0].y - a[3].y) & ((a[0].y - a[3].y) >> (sizeof(int) * 8 - 1)));
+    int max_pos_y = a[0].y - sign * (a[0].y - a[3].y);
+    if (old == 3) { // T-block
+        min_pos_x = min_pos_x + ((a[2].x - min_pos_x) & ((a[2].x - min_pos_x) >> (sizeof(int) * 8 - 1)));
+        sign = ((a[2].x - max_pos_x) >> (sizeof(int) * 8 - 1)) & 1;
+        max_pos_x = a[2].x - sign * (a[2].x - max_pos_x);
+        min_pos_y = a[2].y + ((min_pos_y - a[2].y) & ((min_pos_y - a[2].y) >> (sizeof(int) * 8 - 1)));
+        sign = ((a[2].y - max_pos_y) >> (sizeof(int) * 8 - 1)) & 1;
+        max_pos_y = a[2].y - sign * (a[2].y - max_pos_y);
     }
-    if (min_pos_x < 0 || max_pos_x >= 100 || min_pos_y <= 0) {
+    if (min_pos_y <= 0 || min_pos_x < 0 || max_pos_x >= 100) {
         return 0;
     }
     if (min_pos_y < line_field + 20) {
-        if (max_pos_y / 10 - 1 < 20) {
+       // if (max_pos_y / 10 - 1 < 20) {
             if (field[a[0].y / 10 - 1][a[0].x / 10]) {
                 return 0;
             }
@@ -277,7 +283,7 @@ bool check() {
             else if (field[a[1].y / 10 - 1][a[1].x / 10]) {
                 return 0;
             }
-        }
+        //}
         /*for (short i = 0; i < 4; i++) {
             if ((max_pos_y / 10 - 1 < 20) && (field[a[i].y / 10 - 1][a[i].x / 10])) {
                 return 0;
@@ -552,7 +558,7 @@ int main(void)
                 *(b + i) = *(a + i);
                 a[i].x += dx;
             }
-        
+
             if (check() == 0) {
                 a[0] = b[0];
                 a[1] = b[1];
@@ -720,7 +726,7 @@ int main(void)
             glfwPollEvents();
 
             clock_t END = clock();
-            if (cycles < 1000) {
+            if (cycles < 3000) {
                 EXP += (double)(END - BEGIN) / CLOCKS_PER_SEC;
             }
             else {
