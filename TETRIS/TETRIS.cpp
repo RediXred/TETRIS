@@ -251,13 +251,26 @@ void Show_Button_Start() {
 
 
 bool check() {
-    printf("LF: %d\n", line_field);
+    //printf("LF: %d\n", line_field);
+    /*
     short min_pos_x = min(a[0].x, a[3].x);
     short max_pos_x = max(a[0].x, a[3].x);
     short min_pos_y = min(a[0].y, a[3].y);
     short max_pos_y = max(a[0].y, a[3].y);
     min_pos_x = min(a[2].x, min_pos_x);
-    max_pos_x = max(a[2].x, max_pos_x);
+    max_pos_x = max(a[2].x, max_pos_x);*/
+    int sign = ((a[0].x - a[3].x) >> (sizeof(int) * 8 - 1)) & 1;
+    int min_pos_x = a[3].x + ((a[0].x - a[3].x) & ((a[0].x - a[3].x) >> (sizeof(int) * 8 - 1)));
+    int max_pos_x = a[0].x - sign * (a[0].x - a[3].x);
+    sign = ((a[0].y - a[3].y) >> (sizeof(int) * 8 - 1)) & 1;
+    int min_pos_y = a[3].y + ((a[0].y - a[3].y) & ((a[0].y - a[3].y) >> (sizeof(int) * 8 - 1)));
+    int max_pos_y = a[0].y - sign * (a[0].y - a[3].y);
+    min_pos_x = min_pos_x + ((a[2].x - min_pos_x) & ((a[2].x - min_pos_x) >> (sizeof(int) * 8 - 1)));
+    sign = ((a[2].x - max_pos_x) >> (sizeof(int) * 8 - 1)) & 1;
+    max_pos_x = a[2].x - sign * (a[2].x - max_pos_x);
+    min_pos_y = a[2].y + ((min_pos_y - a[2].y) & ((min_pos_y - a[2].y) >> (sizeof(int) * 8 - 1)));
+    sign = ((a[2].y - max_pos_y) >> (sizeof(int) * 8 - 1)) & 1;
+    max_pos_y = a[2].y - sign * (a[2].y - max_pos_y);
     /*if (old == 3) {
         min_pos_x = min(a[2].x, min_pos_x);
         max_pos_x = max(a[2].x, max_pos_x);
