@@ -279,7 +279,7 @@ bool check() {
         return 0;
     }
     if (min_pos_y < line_field + 20) {
-        if (max_pos_y / 10 - 1 < 20) {
+       // if (max_pos_y / 10 - 1 < 20) {
             if (field[a[0].y / 10 - 1][a[0].x / 10]) {
                 return 0;
             }
@@ -292,7 +292,7 @@ bool check() {
             else if (field[a[1].y / 10 - 1][a[1].x / 10]) {
                 return 0;
             }
-        }
+        //}
         /*for (short i = 0; i < 4; i++) {
             if ((max_pos_y / 10 - 1 < 20) && (field[a[i].y / 10 - 1][a[i].x / 10])) {
                 return 0;
